@@ -3,31 +3,22 @@ let menu = document.getElementsByClassName('menu')[0];
 let about = document.getElementById('about');
 let button = document.getElementById('scroll-btn');
 let conso = document.getElementsByClassName('console')[0];
+let home = document.getElementById('home');
 header.style.justifyContent = 'center';
 
 button.addEventListener('click', () => {
   console.log('click');
+  header.style.display = 'none';
   about.classList.remove('hidden');
   about.scrollIntoView({ behavior: 'smooth' })
 });
 
 window.addEventListener('reload', () => {
   console.log('reload');
-  header.classList.add('hidden');
   about.classList.add('hidden');
 });
 
 console.log(header);
-
-window.addEventListener('scroll', () => {
-  console.log('scroll');
-  if (window.scrollY >= window.innerHeight) {
-    header.classList.remove('center');
-    header.classList.add('hidden');
-    menu.classList.remove('hidden');
-    about.classList.remove('hidden');
-  }
-});
 
 // Array.from(conso.children).forEach((item) => {
 //     console.log(item.tagName); // Print the tag type
@@ -91,15 +82,23 @@ let folders = document.getElementsByClassName('folder');
 let files = document.getElementsByClassName('file');
 let movables = Array.from(folders).concat(Array.from(files));
 let windows = document.getElementById('window');
+let resizeSection = document.getElementById('resizeSection');
 
 const draggables = movables
 const gridSize = 100; // Size of the grid
 let lastClickTimestamp = 0;
+let lastWindowPosition = { 
+  x: 20, 
+  y: 20,
+  width: 200,
+  height: 150
+};
 
 let isDragging = false;
 let selectedIcon = null;
 let initialX, initialY;
 let canSelect = true;
+let isFullScreen = false;
 
 draggables.forEach(draggable => {
   draggable.addEventListener('mousedown', selectIcon);
@@ -121,7 +120,7 @@ screen.addEventListener('mousedown', (event) => {
   startX = event.clientX - screen.getBoundingClientRect().left;
   startY = event.clientY - screen.getBoundingClientRect().top;
   isSelecting = true;
-  selectionRectangle.style.display = 'block'; 
+  selectionRectangle.style.display = 'block';
   selectionRectangle.style.left = `${startX}px`;
   selectionRectangle.style.top = `${startY}px`;
 });
@@ -176,7 +175,15 @@ screen.addEventListener('mouseup', () => {
 function selectIcon(event) {
   if (lastClickTimestamp + 200 > new Date().getTime()) {
     console.log("DOUBLE CLICK")
-    windows.style.display = 'block'; // Ouverture fichier txt
+    const computerElement = document.getElementById('computer');
+    const computerRect = computerElement.getBoundingClientRect();
+    const computerTop = computerRect.top + window.pageYOffset;
+    const computerLeft = computerRect.left + window.pageXOffset;
+
+    // Set the position of the window relative to the computer element
+    windows.style.display = 'block'; // Open text file
+    windows.style.left = `${computerLeft + event.clientX}px`;
+    windows.style.top = `${computerTop + event.clientY}px`;
   } else {
     lastClickTimestamp = new Date().getTime();
   }
@@ -189,7 +196,7 @@ function selectIcon(event) {
   selectedIcon.classList.add("selected")
   isDragging = true;
   canSelect = false;
-  
+
   initialX = event.clientX - selectedIcon.style.left.split('px')[0]; // Mouse position relative to the draggable element
   initialY = event.clientY - selectedIcon.style.top.split('px')[0]; // Mouse position relative to the draggable element
 
@@ -224,22 +231,56 @@ function stopDrag() {
 }
 
 // MOVIDING WINDOWS
-document.getElementById('window').addEventListener('mousedown', selectWindow);  
-document.getElementsByClassName('close')[0].addEventListener('click', () => { 
+document.getElementsByClassName('windowHeader')[0].addEventListener('mousedown', selectWindow);
+document.getElementsByClassName('close')[0].addEventListener('click', () => {
   windows.style.display = 'none';
   console.log("WINDOW closed")
- } );
+});
+document.getElementsByClassName('minimize')[0].addEventListener('click', () => {
+  windows.style.display = 'none';
+  console.log("WINDOW closed")
+});
+document.getElementsByClassName('maximize')[0].addEventListener('click', () => {
+  canSelect = false; 
+  const computerElement = document.getElementById('computer');
+  const computerRect = computerElement.getBoundingClientRect();
+  const windows = document.getElementById('window');
+  isDragging = false;
+
+  if (!isFullScreen) {
+    lastWindowPosition = {
+      x: windows.style.left.split('px')[0],
+      y: windows.style.top.split('px')[0],
+      width: windows.getBoundingClientRect().width,
+      height: windows.getBoundingClientRect().height
+    };
+    windows.style.left = `${computerRect.left}px`;
+    console.log(home.getBoundingClientRect().height)
+    windows.style.top = `${computerRect.top + home.getBoundingClientRect().height}px`;
+    windows.style.width = `${computerRect.width}px`;
+    windows.style.height = `${computerRect.height}px`;
+    
+  } else {
+    windows.style.left = `${lastWindowPosition.x}px`;
+    windows.style.top = `${lastWindowPosition.y}px`;
+    windows.style.width = `${lastWindowPosition.width}px`;
+    windows.style.height = `${lastWindowPosition.height}px  `;
+  }
+  console.log("WINDOW maximized")
+  isFullScreen = !isFullScreen;
+});
 let selectedWindow = null;
 
 function selectWindow(event) {
   console.log("WINDOW selected")
 
-  selectedWindow = this;
+  selectedWindow = windows;
   isDragging = true;
   canSelect = false;
-  
+
   initialX = event.clientX - selectedWindow.style.left.split('px')[0]; // Mouse position relative to the draggable element
   initialY = event.clientY - selectedWindow.style.top.split('px')[0]; // Mouse position relative to the draggable element
+  console.log(initialX, initialY)
 
   document.addEventListener('mousemove', dragWindow);
   document.addEventListener('mouseup', stopDragWindow);
@@ -247,12 +288,25 @@ function selectWindow(event) {
 
 function dragWindow(event) {
   if (isDragging) {
-    console.log("WINDOW dragged")
+    console.log("WINDOW dragged");
     canSelect = false;
-    const mouseX = event.clientX; // Mouse X position relative to the parent element
-    const mouseY = event.clientY; // Mouse Y position relative to the parent element
-    const newX = mouseX - initialX; // Calculate new X position relative to the parent element
-    const newY = mouseY - initialY; // Calculate new Y position relative to the parent element
+
+    const computerElement = document.getElementById('computer');
+    const computerRect = computerElement.getBoundingClientRect();
+
+    // Calculate the maximum allowed positions
+    const maxX = computerRect.right - selectedWindow.offsetWidth;
+    const maxY = (computerRect.bottom + home.getBoundingClientRect().height) - selectedWindow.offsetHeight;
+
+    // Calculate the new position within the bounds
+    let newX = event.clientX - initialX;
+    let newY = event.clientY - initialY;
+    newX = newX < computerRect.left ? computerRect.left : newX;
+    newY = newY < computerRect.top + home.getBoundingClientRect().height ? computerRect.top + home.getBoundingClientRect().height  : newY;
+
+    newX = newX > maxX ? maxX : newX; 
+    newY = newY > maxY ? maxY : newY;
+
     selectedWindow.style.left = newX + 'px';
     selectedWindow.style.top = newY + 'px';
   }
@@ -266,3 +320,57 @@ function stopDragWindow() {
   document.removeEventListener('mousemove', dragWindow);
   document.removeEventListener('mouseup', stopDragWindow);
 }
+
+let isResizing = false;
+let startWindowsX;
+let startWindowsY;
+
+resizeSection.addEventListener('mousedown', startResize);
+
+function startResize(event) {
+  canSelect = false;
+  isResizing = true;
+  startWindowsX = event.clientX;
+  startWindowsY = event.clientY;
+  window.addEventListener('mousemove', resizeWindow);
+  window.addEventListener('mouseup', stopResize);
+}
+
+function resizeWindow(event) {
+  if (isResizing) {
+    // Calculate maximum allowed width and height
+    const computerElement = document.getElementById('computer');
+    const computerRect = computerElement.getBoundingClientRect();
+    const windowRect = windows.getBoundingClientRect();
+    const maxWidth = computerRect.right - windows.offsetLeft;
+    const maxHeight = computerRect.bottom - windowRect.top;
+
+    // Calculate new width and height
+    let newWidth = windows.offsetWidth + (event.clientX - startWindowsX);
+    let newHeight = windows.offsetHeight + (event.clientY - startWindowsY);
+
+    // Ensure new width and height are within the maximum allowed
+    newWidth = Math.min(Math.max(200, newWidth), maxWidth);
+    newHeight = Math.min(newHeight, maxHeight);
+
+    // Set new width and height
+    windows.style.width = `${newWidth}px`;
+    windows.style.height = `${newHeight}px`;
+
+    startWindowsX = Math.min(event.clientX, computerRect.right);
+    startWindowsY = Math.min(Math.max(event.clientY, windowRect.bottom), computerRect.bottom);
+    console.log(computerRect)
+
+  }
+}
+
+function stopResize() {
+  isResizing = false;
+  window.removeEventListener('mousemove', resizeWindow);
+  window.removeEventListener('mouseup', stopResize);
+}
+
+resizeSection.addEventListener('click', (event) => {
+  console.log("RESIZE clicked")
+}
+);
