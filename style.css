@@ -1,0 +1,345 @@
+/* Rest of your CSS code */
+
+body {
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+    height: 100vh;
+    margin: 0px;
+    display: block;
+}
+
+p {
+    margin: 0;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+#header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 15vh;
+    background-color: transparent;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+}
+
+#header .center {
+    justify-content: center !important;
+    transition: all 0.5s ease;
+}
+
+#header.left {
+    justify-content: space-around !important;
+    transition: all 0.5s;
+}
+
+#header .logo img {
+    width: 10vh;
+    padding: 50px;
+}
+
+#header .menu {
+    display: flex;
+    gap: 50px;
+    margin-right: 50px;
+    color: #ffffff;
+}
+
+#header .menu a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 1.2em;
+    font-family: 'Roboto', sans-serif;
+}
+
+
+/* Home page */
+
+#home {
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100vh;
+    background-color: transparent;
+}
+
+#home h1 {
+    font-size: 5em;
+    font-weight: 700;
+    color: #fff;
+    line-height: 1;
+    margin: 0;
+}
+
+#home h2 {
+    font-size: 2em;
+    font-weight: 400;
+    color: #fff;
+    line-height: 1;
+    font-family: "Reddit Mono", monospace;
+    line-height: 1em;
+    margin: 0;
+}
+
+#home .container {
+    position: relative;
+    top: 20vh;
+    width: 100vw;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    text-align: left;
+}
+
+.text {
+    margin-left: 20vw;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    text-align: left;
+    width: 25vw;
+}
+
+#home button {
+    margin-top: 250px;
+    padding: 10px 20px;
+    border: 3px solid #ffffff90;
+    color: #ffffff90;
+    border-radius: 8px;
+    background-color: transparent;
+    font-size: 1em;
+    font-family: "Reddit Mono", monospace;
+}
+
+/* CONSOLE */
+
+#about {
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: left;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0);
+    font-family: Monaco, Consolas, "Lucida Console", monospace;
+    background-color: black;
+    color: #1EFF00;
+}
+
+#about h1 {
+    margin-top: 15vh;
+    margin-left: 20px;
+    font-size: 3em;
+    font-weight: 700;
+    color: #1EFF00;
+    line-height: 1;
+}
+
+.console {
+  text-align:center;
+  height:200px;
+  width:600px;
+  display:block;
+  position:relative;
+  color:white;
+  top:0;
+  left:0;
+  margin:auto;
+}
+
+.cursor.no{
+    opacity: 0;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.cursor {
+    /* display: inline-block; */
+    width: 8px;
+    height: 18px;
+    display: inline-block;
+    position: relative;
+    top: -1em;
+    left: 10px;
+    opacity: 1;
+}
+
+@keyframes blink {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}
+
+/* computer*/
+
+#computer {
+    background-image: url("./public/macWP.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: top;
+    z-index: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    width: 90vw;
+    height: 90vh;
+    border: 3px solid #757575;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    user-select: none;
+}
+
+.file {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 1em;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.file img {
+    width: 100px;
+    height: 100px;
+    pointer-events: none;
+}
+
+.file p {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 90%;
+    text-align: center;
+}
+
+.folder {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 1em;
+    position: relative;
+    cursor: pointer;
+}
+
+.folder img {
+    width: 100px;
+    height: 100px;
+    pointer-events: none;
+}
+
+#selection-rectangle {
+    position: relative;
+    border: 1px solid #e9e9e982;
+    background-color: rgba(255, 255, 255, 0.473);
+    pointer-events: none;
+    z-index: 1000;
+    display: none;
+    margin: none;
+}
+
+.win {
+    position: absolute;
+}   
+
+#window {
+    position: relative;
+    background-color: #191919;
+    pointer-events: none;
+    z-index: 1;
+    display: none;
+    margin: none;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    z-index: 1000;
+    cursor: pointer;
+}
+
+.windowHeader {
+    position: relative;
+    width: 100%;
+    height: 20px;
+    background-color: #232323;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 10px;
+}
+
+#window p {
+    color: white;
+    font-size: 1em;
+    margin-left: 10px;
+}
+
+.close {
+    width: 13px;
+    aspect-ratio: 1/1;
+    background-color: #f22d2d;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-left: 10px;
+    margin-top: 10px;
+}
+
+.minimize {
+    width: 13px;
+    aspect-ratio: 1/1;
+    background-color: #ffcc00;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.maximize {
+    width: 13px;
+    aspect-ratio: 1/1;
+    background-color: #39f839;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.selection {
+    position: absolute;
+}
+
+.selected {
+    background-color: #003c9649;
+    border: 1px solid #e9e9e982;
+}
