@@ -134,6 +134,12 @@ p {
     font-family: "Reddit Mono", monospace;
 }
 
+#home button:hover {
+    background-color: #ffffff90;
+    color: #ffffff;
+    border-color: #fff;
+}
+
 /* CONSOLE */
 
 #about {
@@ -235,6 +241,7 @@ p {
 .file img {
     width: 100px;
     height: 100px;
+    aspect-ratio: 1/1;
     pointer-events: none;
 }
 
@@ -244,6 +251,7 @@ p {
     white-space: nowrap;
     width: 90%;
     text-align: center;
+    z-index: 100;
 }
 
 .folder {
@@ -294,6 +302,7 @@ p {
     width: 50vw; /* Set initial width */
     height: 50vh; /* Set initial height */
 }
+
 
 .windowHeader {
     position: relative;
@@ -363,4 +372,95 @@ p {
     right: 0;
     z-index: 1000;
     cursor: nwse-resize;
+}
+
+#finder {
+    position: absolute;
+    background-color: transparent;
+    pointer-events: auto;
+    z-index: 1;
+    display: flex; /* CHANGE TO NONE */
+    margin: none;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    border: 2px solid #49494990;
+    z-index: 500;
+    cursor: pointer;
+    overflow: auto;
+    min-width: 200px;
+    min-height: 150px;
+    width: 50vw;
+    height: 50vh;
+    overflow:hidden;
+}
+
+#finder .windowHeader {
+    background-color: transparent; /* Adjust the transparency */
+    border-top-right-radius: 0;
+}
+
+#sideBar {
+    z-index: 10;
+    backdrop-filter: blur(25px); /* Apply blur effect */
+    background-color: rgba(39, 39, 39, 0.612); /* Adjust the transparency */
+    padding: 10px;
+    height: 100%;
+    position: relative;
+    top: 0px;
+    left: 0px;
+}
+
+.list {
+    color: #818181;
+    font-weight: 600;
+    padding-top: 30px;
+}
+
+.favs {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 11px;
+    margin-left: 15px;
+}
+
+.listElement {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 7px 15px;
+    border-radius: 5px;
+    gap: 12px;
+}
+
+.listElement p {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    color: white;
+    font-weight: 400;
+    font-size: 13px;
+}
+
+.listElement img {
+    height: 16px;
+    margin-right: -5px;
+}
+
+.listElement:hover {
+    transition: 0.1s;
+    background-color: #444444a0;
+}
+
+#content {
+    width: 100%;
+    height: 100%;
+    background-color: #232526;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr 1fr 1fr;
+    user-select: none;
+    padding: 20px;
+    overflow: scroll;
+}
+
+#content .file{
+    width: 50px;
 }

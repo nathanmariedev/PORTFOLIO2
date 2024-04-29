@@ -1,3 +1,5 @@
+let about_me = "Au cours de mes trois années d’IUT, j'ai eu l’occasion de travailler sur de nombreux projets variés tels que des applications web, des logiciels (Java, Kotlin) ou bien encore la création et la maintenance de serveurs Apache. De plus, lors de mon stage de deuxième année chez WeCraftApps en tant que développeur web fullstack, j'ai pu approfondir mes compétences en développement web en réalisant des mises à jour et en implémentant de nouvelles fonctionnalités sur un site web d’agence immobilière."
+
 let header = document.getElementById('header');
 let menu = document.getElementsByClassName('menu')[0];
 let about = document.getElementById('about');
@@ -83,12 +85,13 @@ let files = document.getElementsByClassName('file');
 let movables = Array.from(folders).concat(Array.from(files));
 let windows = document.getElementById('window');
 let resizeSection = document.getElementById('resizeSection');
+let finder = document.getElementById('finder')
 
 const draggables = movables
 const gridSize = 100; // Size of the grid
 let lastClickTimestamp = 0;
-let lastWindowPosition = { 
-  x: 20, 
+let lastWindowPosition = {
+  x: 20,
   y: 20,
   width: 200,
   height: 150
@@ -180,10 +183,35 @@ function selectIcon(event) {
     const computerTop = computerRect.top + window.pageYOffset;
     const computerLeft = computerRect.left + window.pageXOffset;
 
-    // Set the position of the window relative to the computer element
-    windows.style.display = 'block'; // Open text file
-    windows.style.left = `${computerLeft + event.clientX}px`;
-    windows.style.top = `${computerTop + event.clientY}px`;
+    let fileNames = ['musicProduction.als', 'VsCode', 'about_me.txt'];
+    let fileName = event.target.innerText
+    console.log(fileName)
+
+    switch (fileName) {
+      case "about_me.txt":
+        windows.children[1].innerText = about_me;
+        break;
+
+      case "VsCode":
+        windows.children[1].innerText = "Unfortunately, I didn't managed to recreate VsCode in JS... Sorry 😓";
+        break;
+
+      case "musicProduction.als":
+        windows.children[1].innerText = "This window was made for txt content... But after all, let make a JS DAW!";
+        break;
+    }
+
+    if (event.target.innerText == "IMG") {
+      finder.style.display = "flex";
+      windows.style.left = `${computerLeft + event.clientX}px`;
+      windows.style.top = `${computerTop + event.clientY}px`;
+    } else {
+      // Set the position of the window relative to the computer element
+      windows.style.display = 'block'; // Open text file
+      windows.style.left = `${computerLeft + event.clientX}px`;
+      windows.style.top = `${computerTop + event.clientY}px`;
+    }
+
   } else {
     lastClickTimestamp = new Date().getTime();
   }
@@ -241,7 +269,7 @@ document.getElementsByClassName('minimize')[0].addEventListener('click', () => {
   console.log("WINDOW closed")
 });
 document.getElementsByClassName('maximize')[0].addEventListener('click', () => {
-  canSelect = false; 
+  canSelect = false;
   const computerElement = document.getElementById('computer');
   const computerRect = computerElement.getBoundingClientRect();
   const windows = document.getElementById('window');
@@ -259,7 +287,7 @@ document.getElementsByClassName('maximize')[0].addEventListener('click', () => {
     windows.style.top = `${computerRect.top + home.getBoundingClientRect().height}px`;
     windows.style.width = `${computerRect.width}px`;
     windows.style.height = `${computerRect.height}px`;
-    
+
   } else {
     windows.style.left = `${lastWindowPosition.x}px`;
     windows.style.top = `${lastWindowPosition.y}px`;
@@ -302,9 +330,9 @@ function dragWindow(event) {
     let newX = event.clientX - initialX;
     let newY = event.clientY - initialY;
     newX = newX < computerRect.left ? computerRect.left : newX;
-    newY = newY < computerRect.top + home.getBoundingClientRect().height ? computerRect.top + home.getBoundingClientRect().height  : newY;
+    newY = newY < computerRect.top + home.getBoundingClientRect().height ? computerRect.top + home.getBoundingClientRect().height : newY;
 
-    newX = newX > maxX ? maxX : newX; 
+    newX = newX > maxX ? maxX : newX;
     newY = newY > maxY ? maxY : newY;
 
     selectedWindow.style.left = newX + 'px';
