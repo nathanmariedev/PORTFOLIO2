@@ -379,7 +379,7 @@ p {
     background-color: transparent;
     pointer-events: auto;
     z-index: 1;
-    display: flex; /* CHANGE TO NONE */
+    display: none; /* CHANGE TO NONE */
     margin: none;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
