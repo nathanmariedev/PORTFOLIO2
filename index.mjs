@@ -349,6 +349,8 @@ function stopDragWindow() {
   document.removeEventListener('mouseup', stopDragWindow);
 }
 
+// RESIZE
+
 let isResizing = false;
 let startWindowsX;
 let startWindowsY;
@@ -402,3 +404,45 @@ resizeSection.addEventListener('click', (event) => {
   console.log("RESIZE clicked")
 }
 );
+
+let allResizeColumn = document.querySelectorAll(".resizeColumn")
+let finderContent = document.getElementById("content")
+let isResizingColumn = false;
+let startColumnX = 0;
+
+allResizeColumn.forEach((cc) => {
+  cc.addEventListener('mousedown', startResizeColumn)
+})
+
+function startResizeColumn(event) {
+  let elementToResize = document.getElementsByClassName("allFilesFolders")[0]
+  console.log("start RESIZE COLUMN")
+  canSelect = false;
+  isResizingColumn = true;
+  startColumnX = event.mouseX - elementToResize.getBoundingClientRect().right ;
+  window.addEventListener('mousemove', resizeColumn);
+  window.addEventListener('mouseup', stopResizeColumn);
+  
+}
+
+function resizeColumn(event) {
+  if (isResizingColumn) {
+    //console.log("RESIZE COLUMN")
+    // Calculate maximum allowed width and height
+    let elementToResize = document.getElementsByClassName("allFilesFolders")[0]
+
+    // Calculate new width and height
+    let newWidth = elementToResize.offsetWidth + (event.x - elementToResize.getBoundingClientRect().right);
+    console.log(event.x)
+
+    // Set new width and height
+    elementToResize.style.width = `${newWidth - 35}px`;
+
+  }
+}
+
+function stopResizeColumn() {
+  isResizingColumn = false;
+  window.removeEventListener('mousemove', resizeColumn);
+  window.removeEventListener('mouseup', stopResizeColumn);
+}

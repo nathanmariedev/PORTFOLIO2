@@ -449,18 +449,86 @@ p {
     background-color: #444444a0;
 }
 
-#content {
+#finder #content {
     width: 100%;
     height: 100%;
     background-color: #232526;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-    grid-template-rows: 1fr 1fr 1fr 1fr;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+
     user-select: none;
-    padding: 20px;
     overflow: scroll;
 }
 
-#content .file{
-    width: 50px;
+.allFilesFolders{
+    width: 200px;
+    min-width: 75px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 15px;
+}
+
+.contentFile, .contentFolder{
+    width:100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    color: white;
+    font-weight: 400;
+    font-size: 13px;
+    padding: 3px;
+    border-radius: 5px;
+}
+
+.contentFolder {
+    justify-content: space-between;
+}
+
+.contentFile img, .contentFolder img {
+    height: 15px;
+}
+
+.contentFile p, .contentFolder p {
+    overflow: hidden;
+    flex-wrap: wrap;
+}
+
+.contentFile:hover, .contentFolder:hover {
+    background-color: #0049b7;
+}
+
+.contentFolder span {
+    color: #616161;
+    font-weight: bold;
+}
+
+.label {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 5px;
+    overflow: scroll;
+    
+}
+
+.contentColumn {
+    min-width: 75px;
+    border-right: solid 1px #1b1b1b;
+    border-top: solid 1px #1b1b1b;
+    border-bottom: solid 1px #1b1b1b;
+    overflow-x: scroll;
+    display: flex;
+    flex-direction: row;
+}
+
+.resizeColumn {
+    width: 5px;
+    height: 100%;
+    position: relative;
+    top: 0px;
+    right: 0px;
+    cursor:ew-resize;
 }
