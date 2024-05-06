@@ -349,7 +349,7 @@ function stopDragWindow() {
   document.removeEventListener('mouseup', stopDragWindow);
 }
 
-// RESIZE
+// RESIZE Window
 
 let isResizing = false;
 let startWindowsX;
@@ -405,44 +405,258 @@ resizeSection.addEventListener('click', (event) => {
 }
 );
 
-let allResizeColumn = document.querySelectorAll(".resizeColumn")
-let finderContent = document.getElementById("content")
+// RESIZE Column
+
+let allResizeColumn = document.getElementsByClassName("resizeColumn")
 let isResizingColumn = false;
 let startColumnX = 0;
+let resizingElement = null; // Variable pour suivre l'élément actuellement redimensionné
 
-allResizeColumn.forEach((cc) => {
-  cc.addEventListener('mousedown', startResizeColumn)
-})
+
+Array.from(allResizeColumn).forEach((cc) => {
+  cc.addEventListener('mousedown', startResizeColumn);
+});
 
 function startResizeColumn(event) {
-  let elementToResize = document.getElementsByClassName("allFilesFolders")[0]
-  console.log("start RESIZE COLUMN")
+  let columnId = parseInt(event.target.classList[1]); // Assurez-vous que columnId est un nombre entier
+  resizingElement = document.getElementsByClassName("allFilesFolders")[columnId - 1];
+  console.log(resizingElement);
+  console.log("start RESIZE COLUMN");
   canSelect = false;
   isResizingColumn = true;
-  startColumnX = event.mouseX - elementToResize.getBoundingClientRect().right ;
+  startColumnX = event.clientX - resizingElement.getBoundingClientRect().right; // Utilisez clientX au lieu de mouseX
+
   window.addEventListener('mousemove', resizeColumn);
   window.addEventListener('mouseup', stopResizeColumn);
-  
 }
 
+
 function resizeColumn(event) {
-  if (isResizingColumn) {
-    //console.log("RESIZE COLUMN")
-    // Calculate maximum allowed width and height
-    let elementToResize = document.getElementsByClassName("allFilesFolders")[0]
+  if (isResizingColumn && resizingElement) {
+    // Calculate new width
+    let newWidth = resizingElement.offsetWidth + (event.clientX - resizingElement.getBoundingClientRect().right);
 
-    // Calculate new width and height
-    let newWidth = elementToResize.offsetWidth + (event.x - elementToResize.getBoundingClientRect().right);
-    console.log(event.x)
-
-    // Set new width and height
-    elementToResize.style.width = `${newWidth - 35}px`;
-
+    // Set new width
+    resizingElement.style.width = `${newWidth - 35}px`;
   }
 }
 
 function stopResizeColumn() {
   isResizingColumn = false;
+  resizingElement = null; // Réinitialiser l'élément actuellement redimensionné
   window.removeEventListener('mousemove', resizeColumn);
   window.removeEventListener('mouseup', stopResizeColumn);
+}
+
+// FOLDERS AND FILES
+let actualPath = ["Nathan"];
+
+const data = [
+  {
+    "name": "Nathan",
+    "type": "primary",
+    "icon": "public/home.svg",
+    "path": null
+  },
+  {
+    "name": "Applications",
+    "type": "primary",
+    "icon": "public/apps.svg",
+    "path": null
+  },
+  {
+    "name": "Documents",
+    "type": "primary",
+    "icon": "public/file.svg",
+    "path": null
+  },
+  {
+    "name": "Desktop",
+    "type": "primary",
+    "icon": "public/monitor.svg",
+    "path": null
+  },
+  {
+    "name": "Images",
+    "type": "primary",
+    "icon": "public/image.svg",
+    "path": null
+  },
+  {
+    "name": "Music",
+    "type": "primary",
+    "icon": "public/music.svg",
+    "path": null
+  },
+  {
+    "name": "about_me.txt",
+    "type": "file",
+    "icon": "public/file.png",
+    "path": "Desktop"
+  },
+  {
+    "name": "musicProduction.als",
+    "type": "file",
+    "icon": "public/abl.png",
+    "path": "Desktop"
+  },
+  {
+    "name": "VsCode",
+    "type": "file",
+    "icon": "public/vscode.png",
+    "path": "Desktop"
+  },
+  {
+    "name": "Spotify",
+    "type": "file",
+    "icon": "public/spotify.png",
+    "path": "Applications "
+  },
+  {
+    "name": "hello👋.txt",
+    "type": "file",
+    "icon": "public/file.png",
+    "path": "Desktop"
+  },
+  {
+    "name": "VsCode",
+    "type": "file",
+    "icon": "public/vscode.png",
+    "path": "Applications"
+  },
+  {
+    "name": "Ableton",
+    "type": "file",
+    "icon": "public/ableton.png",
+    "path": "Applications"
+  },
+  {
+    "name": "Terminal",
+    "type": "file",
+    "icon": "public/terminal.png",
+    "path": "Applications"
+  },
+  {
+    "name": "ME",
+    "type": "folder",
+    "icon": "public/folder.png",
+    "path": "Documents"
+  },
+  {
+    "name": "EDUCATION",
+    "type": "folder",
+    "icon": "public/folder.png",
+    "path": "Documents"
+  }
+]
+let primaryFolders = document.getElementsByClassName('list')[0];
+/*
+  LIST ELEMENT
+
+  {<div class="listElement">
+    <img src="public/home.svg">
+    <p>Nathan</p>
+  </div>
+*/
+data.forEach((item) => {
+  if (item.type != "primary") {
+    return;
+  }
+  let listElement = document.createElement('div');
+  listElement.classList.add('listElement');
+  let img = document.createElement('img');
+  img.src = item.icon;
+  let p = document.createElement('p');
+  p.innerText = item.name;
+  listElement.appendChild(img);
+  listElement.appendChild(p);
+  if (actualPath[0] === item.name) {
+    listElement.classList.add('selected');
+  }
+  listElement.addEventListener('click', () => {
+    console.log("HEHE")
+
+    Array.from(primaryFolders.children).forEach((element) => {
+      element.classList.remove('selected');
+    });
+    actualPath = [item.name];
+    listElement.classList.add('selected');
+    initFirstColumn();
+  });
+  primaryFolders.appendChild(listElement);
+});
+
+/* 
+<div class="allFilesFolders 1">
+  <div class="contentFile">
+      <div class="label">
+          <img src="public/abl.png">
+          <p>musicProduction.als</p>
+      </div>
+
+  </div>
+  <div class="contentFile">
+      <div class="label">
+          <img src="public/abl.png">
+          <p>musicProduction.als</p>
+      </div>
+
+  </div>
+  <div class="contentFile">
+      <div class="label">
+          <img src="public/abl.png">
+          <p>musicProduction.als</p>
+      </div>
+
+  </div>
+  <div class="contentFolder">
+      <div class="label">
+          <img src="public/folder.png">
+          <p>musicProduction.als</p>
+      </div>
+
+      <img src="./public/chevron-right.svg">
+  </div>
+</div>
+
+<div class="resizeColumn 1"></div>
+*/
+let allFilesFoldersPrimary = document.getElementsByClassName('contentColumn')[0];
+
+let initFirstColumn = () => {
+  allFilesFoldersPrimary.innerHTML = "";
+
+  let allFilesFolders = document.createElement('div');
+  allFilesFolders.classList.add('allFilesFolders');
+  allFilesFolders.classList.add('1');
+
+  data.forEach((item) => {
+    if (item.type === "primary") {
+      return;
+    }
+    console.log(item.path.split('/')[0], actualPath[0])
+    if (item.path.split('/')[0] === actualPath[0]) {
+
+      let contentFile = document.createElement('div');
+      contentFile.classList.add('contentFile');
+      let label = document.createElement('div');
+      label.classList.add('label');
+      let img = document.createElement('img');
+      img.src = item.icon;
+      let p = document.createElement('p');
+      p.innerText = item.name;
+      label.appendChild(img);
+      label.appendChild(p);
+      contentFile.appendChild(label);
+      allFilesFolders.appendChild(contentFile);
+
+
+    }
+  });
+  allFilesFoldersPrimary.appendChild(allFilesFolders);
+  let resizeColumn = document.createElement('div');
+  resizeColumn.classList.add('resizeColumn');
+  resizeColumn.classList.add('1');
+  resizeColumn.addEventListener('mousedown', startResizeColumn);
+  allFilesFoldersPrimary.appendChild(resizeColumn);
 }

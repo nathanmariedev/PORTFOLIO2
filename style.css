@@ -214,7 +214,7 @@ p {
     background-size: cover;
     background-repeat: no-repeat;
     background-position: top;
-    z-index: 0;
+    z-index: 1;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
     grid-template-rows: 1fr 1fr 1fr 1fr;
@@ -289,7 +289,6 @@ p {
     position: absolute; /* Changed from relative to absolute */ 
     background-color: #191919;
     pointer-events: auto; /* Changed to auto to allow pointer events */
-    z-index: 1;
     display: none;
     margin: none;
     border-top-left-radius: 15px;
@@ -378,13 +377,12 @@ p {
     position: absolute;
     background-color: transparent;
     pointer-events: auto;
-    z-index: 1;
+    z-index: 500;
     display: none; /* CHANGE TO NONE */
     margin: none;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
     border: 2px solid #49494990;
-    z-index: 500;
     cursor: pointer;
     overflow: auto;
     min-width: 200px;
@@ -400,7 +398,7 @@ p {
 }
 
 #sideBar {
-    z-index: 10;
+    z-index: 5000;
     backdrop-filter: blur(25px); /* Apply blur effect */
     background-color: rgba(39, 39, 39, 0.612); /* Adjust the transparency */
     padding: 10px;
@@ -420,6 +418,7 @@ p {
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: 11px;
     margin-left: 15px;
+    margin-bottom: 5px;
 }
 
 .listElement {
@@ -432,6 +431,11 @@ p {
     gap: 12px;
 }
 
+.listElement.selected {
+    border: none;
+    background-color: #444444a0;
+}
+
 .listElement p {
     font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     color: white;
@@ -442,11 +446,6 @@ p {
 .listElement img {
     height: 16px;
     margin-right: -5px;
-}
-
-.listElement:hover {
-    transition: 0.1s;
-    background-color: #444444a0;
 }
 
 #finder #content {
@@ -466,7 +465,7 @@ p {
     min-width: 75px;
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 3px;
     padding: 15px;
 }
 
@@ -488,10 +487,11 @@ p {
 }
 
 .contentFile img, .contentFolder img {
-    height: 15px;
+    height: 17px;
 }
 
 .contentFile p, .contentFolder p {
+    text-overflow: ellipsis;
     overflow: hidden;
     flex-wrap: wrap;
 }
@@ -511,7 +511,6 @@ p {
     align-items: center;
     gap: 5px;
     overflow: scroll;
-    
 }
 
 .contentColumn {

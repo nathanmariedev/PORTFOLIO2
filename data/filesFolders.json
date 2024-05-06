@@ -1,0 +1,38 @@
+[
+    {
+        "name": "Nathan",
+        "type": "primary",
+        "icon": "",
+        "father": null
+    }, 
+    {
+        "name": "Applications",
+        "type": "primary",
+        "icon": "",
+        "father": null
+    },
+    {
+        "name": "Documents",
+        "type": "primary",
+        "icon": "",
+        "father": null
+    },
+    {
+        "name": "Desktop",
+        "type": "primary",
+        "icon": "",
+        "father": null
+    },
+    {
+        "name": "Images",
+        "type": "primary",
+        "icon": "",
+        "father": null
+    },
+    {
+        "name": "Music",
+        "type": "primary",
+        "icon": "",
+        "father": null
+    }
+]
