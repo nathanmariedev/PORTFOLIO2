@@ -102,11 +102,6 @@ let selectedIcon = null;
 let initialX, initialY;
 let canSelect = true;
 let isFullScreen = false;
-
-draggables.forEach(draggable => {
-  draggable.addEventListener('mousedown', selectIcon);
-});
-
 let startX, startY, endX, endY;
 let isSelecting = false;
 const selectionRectangle = document.getElementById('selection-rectangle');
@@ -183,35 +178,30 @@ function selectIcon(event) {
     const computerTop = computerRect.top + window.pageYOffset;
     const computerLeft = computerRect.left + window.pageXOffset;
 
-    let fileNames = ['musicProduction.als', 'VsCode', 'about_me.txt'];
     let fileName = event.target.innerText
     console.log(fileName)
 
-    switch (fileName) {
-      case "about_me.txt":
-        windows.children[1].innerText = about_me;
-        break;
-
-      case "VsCode":
-        windows.children[1].innerText = "Unfortunately, I didn't managed to recreate VsCode in JS... Sorry 😓";
-        break;
-
-      case "musicProduction.als":
-        windows.children[1].innerText = "This window was made for txt content... But after all, let make a JS DAW!";
-        break;
+    data.forEach((item) => {
+      if (item.name === fileName) {
+        if (item.type === "folder") {
+          finder.style.display = "flex";
+          windows.style.left = `${computerLeft + event.clientX}px`;
+          windows.style.top = `${computerTop + event.clientY}px`;
+          actualPath.push(item.name);
+          initFirstColumn();
+          windows.style.display = 'none'; // Open folder
+        } else {
+          windows.style.display = 'block'; // Open text file
+          windows.style.left = `${computerLeft + event.clientX}px`;
+          windows.style.top = `${computerTop + event.clientY}px`;
+          let content = windows.children[1];
+          content.innerHTML = item.content;
+        }
+      }
     }
+    );
 
-    if (event.target.innerText == "IMG") {
-      finder.style.display = "flex";
-      windows.style.left = `${computerLeft + event.clientX}px`;
-      windows.style.top = `${computerTop + event.clientY}px`;
-    } else {
-      // Set the position of the window relative to the computer element
-      windows.style.display = 'block'; // Open text file
-      windows.style.left = `${computerLeft + event.clientX}px`;
-      windows.style.top = `${computerTop + event.clientY}px`;
-    }
-
+    console.log(event)
   } else {
     lastClickTimestamp = new Date().getTime();
   }
@@ -260,45 +250,56 @@ function stopDrag() {
 
 // MOVIDING WINDOWS
 document.getElementsByClassName('windowHeader')[0].addEventListener('mousedown', selectWindow);
-document.getElementsByClassName('close')[0].addEventListener('click', () => {
-  windows.style.display = 'none';
-  console.log("WINDOW closed")
-});
-document.getElementsByClassName('minimize')[0].addEventListener('click', () => {
-  windows.style.display = 'none';
-  console.log("WINDOW closed")
-});
-document.getElementsByClassName('maximize')[0].addEventListener('click', () => {
-  canSelect = false;
-  const computerElement = document.getElementById('computer');
-  const computerRect = computerElement.getBoundingClientRect();
-  const windows = document.getElementById('window');
-  isDragging = false;
+Array.from(document.getElementsByClassName('close')).forEach((close) => {
+  close.addEventListener('click', (e) => {
+    close.classList[1] === "win" ? windows.style.display = 'none' : finder.style.display = 'none';
+  });
+})
 
-  if (!isFullScreen) {
-    lastWindowPosition = {
-      x: windows.style.left.split('px')[0],
-      y: windows.style.top.split('px')[0],
-      width: windows.getBoundingClientRect().width,
-      height: windows.getBoundingClientRect().height
-    };
-    windows.style.left = `${computerRect.left}px`;
-    console.log(home.getBoundingClientRect().height)
-    windows.style.top = `${computerRect.top + home.getBoundingClientRect().height}px`;
-    windows.style.width = `${computerRect.width}px`;
-    windows.style.height = `${computerRect.height}px`;
-
-  } else {
-    windows.style.left = `${lastWindowPosition.x}px`;
-    windows.style.top = `${lastWindowPosition.y}px`;
-    windows.style.width = `${lastWindowPosition.width}px`;
-    windows.style.height = `${lastWindowPosition.height}px  `;
-  }
-  console.log("WINDOW maximized")
-  isFullScreen = !isFullScreen;
+Array.from(document.getElementsByClassName('minimize')).forEach((minimize) => {
+  minimize.addEventListener('click', () => {
+    minimize.classList[1] === "win" ? windows.style.display = 'none' : finder.style.display = 'none';
+  });
 });
+
+Array.from(document.getElementsByClassName('maximize')).forEach((maximize) => {
+  maximize.addEventListener('click', () => {
+    canSelect = false;
+    const computerElement = document.getElementById('computer');
+    const computerRect = computerElement.getBoundingClientRect();
+    let windows;
+    if (maximize.classList[1] === "win") {
+      windows = document.getElementById('window');
+    } else {
+      windows = document.getElementById('finder');
+    }
+    isDragging = false;
+
+    if (!isFullScreen) {
+      lastWindowPosition = {
+        x: windows.style.left.split('px')[0],
+        y: windows.style.top.split('px')[0],
+        width: windows.getBoundingClientRect().width,
+        height: windows.getBoundingClientRect().height
+      };
+      windows.style.left = `${computerRect.left}px`;
+      console.log(home.getBoundingClientRect().height)
+      windows.style.top = `${computerRect.top + home.getBoundingClientRect().height}px`;
+      windows.style.width = `${computerRect.width}px`;
+      windows.style.height = `${computerRect.height}px`;
+
+    } else {
+      windows.style.left = `${lastWindowPosition.x}px`;
+      windows.style.top = `${lastWindowPosition.y}px`;
+      windows.style.width = `${lastWindowPosition.width}px`;
+      windows.style.height = `${lastWindowPosition.height}px  `;
+    }
+    console.log("WINDOW maximized")
+    isFullScreen = !isFullScreen;
+  });
+});
+
 let selectedWindow = null;
-
 function selectWindow(event) {
   console.log("WINDOW selected")
 
@@ -489,6 +490,32 @@ const data = [
     "path": null
   },
   {
+    "name": "Spotify",
+    "type": "file",
+    "icon": "public/spotify.png",
+    "path": "Applications"
+  },
+  {
+    "name": "hello👋.txt",
+    "type": "file",
+    "icon": "public/file.png",
+    "path": "Desktop",
+    "content": "Hello, Welcome to my portfolio.<br><br> I'm Nathan, and I'm a first year student at the Engineering School of IMT Atlantique. As a passionate about software development, I'm always looking for new challenges.<br><br> This portfolio takes the form of a desktop environment, my desktop environment. Feel free to explore it and discover more about me.<br> Wish you a good experience!🤠"
+  },
+  {
+    "name": "Documents",
+    "type": "folder",
+    "icon": "public/folder.png",
+    "path": "Desktop"
+  },
+  {
+    "name": "VsCode",
+    "type": "file",
+    "icon": "public/vscode.png",
+    "path": "Desktop",
+    "content": "As a software developer, I use Visual Studio Code on a daily basis. It's a powerful and lightweight code editor that allows me to work on a wide range of projects. I use it for web development, mobile development, and even for writing scripts."
+  },
+  {
     "name": "about_me.txt",
     "type": "file",
     "icon": "public/file.png",
@@ -498,31 +525,15 @@ const data = [
     "name": "musicProduction.als",
     "type": "file",
     "icon": "public/abl.png",
-    "path": "Desktop"
+    "path": "Desktop",
+    "content": "I have been using Ableton Live for a few years now. It's a powerful digital audio workstation (DAW) that allows me to create music. I use it to produce music, mix tracks, and even to create sound effects for my projects. <br><br> Before using Ableton Live, I used other DAWs such as FL Studio and Logic Pro. However, I found Ableton Live to be the most intuitive and flexible DAW for my needs."
   },
   {
     "name": "VsCode",
     "type": "file",
     "icon": "public/vscode.png",
-    "path": "Desktop"
-  },
-  {
-    "name": "Spotify",
-    "type": "file",
-    "icon": "public/spotify.png",
-    "path": "Applications "
-  },
-  {
-    "name": "hello👋.txt",
-    "type": "file",
-    "icon": "public/file.png",
-    "path": "Desktop"
-  },
-  {
-    "name": "VsCode",
-    "type": "file",
-    "icon": "public/vscode.png",
-    "path": "Applications"
+    "path": "Applications",
+    "content": "As a software developer, I use Visual Studio Code on a daily basis. It's a powerful and lightweight code editor that allows me to work on a wide range of projects. I use it for web development, mobile development, and even for writing scripts. <br><br> I have also installed a few extensions to improve my productivity, such as Live Server, Prettier..."
   },
   {
     "name": "Ableton",
@@ -534,6 +545,54 @@ const data = [
     "name": "Terminal",
     "type": "file",
     "icon": "public/terminal.png",
+    "path": "Applications"
+  },
+  {
+    "name": "Linkedin",
+    "type": "file",
+    "icon": "public/linkedin.png",
+    "path": "Applications"
+  },
+  {
+    "name": "CLion",
+    "type": "file",
+    "icon": "public/clion.png",
+    "path": "Applications"
+  },
+  {
+    "name": "IntelliJ",
+    "type": "file",
+    "icon": "public/intell.png",
+    "path": "Applications"
+  },
+  {
+    "name": "SQLDeveloper",
+    "type": "file",
+    "icon": "public/sqldev.png",
+    "path": "Applications"
+  },
+  {
+    "name": "Notion",
+    "type": "file",
+    "icon": "public/notion.png",
+    "path": "Applications"
+  },
+  {
+    "name": "Android Studio",
+    "type": "file",
+    "icon": "public/androidstudio.png",
+    "path": "Applications"
+  },
+  {
+    "name": "Figma",
+    "type": "file",
+    "icon": "public/figma.png",
+    "path": "Applications"
+  },
+  {
+    "name": "Docker",
+    "type": "file",
+    "icon": "public/docker.png",
     "path": "Applications"
   },
   {
@@ -549,6 +608,28 @@ const data = [
     "path": "Documents"
   }
 ]
+// Desktop
+
+data.forEach((item) => {
+  if (item.type === "primary") {
+    return;
+  }
+  if (item.path.split('/')[0] === "Desktop") {
+    let desktop = document.getElementById('computer');
+    let element = document.createElement('div');
+    item.type === "folder" ? element.classList.add('folder') : element.classList.add('file');
+    let img = document.createElement('img');
+    img.src = item.icon;
+    let p = document.createElement('p');
+    p.innerText = item.name;
+    element.appendChild(img);
+    element.appendChild(p);
+    element.addEventListener('mousedown', selectIcon);
+    desktop.appendChild(element);
+  }
+}
+);
+
 let primaryFolders = document.getElementsByClassName('list')[0];
 /*
   LIST ELEMENT
@@ -634,7 +715,7 @@ let initFirstColumn = () => {
     if (item.type === "primary") {
       return;
     }
-    console.log(item.path.split('/')[0], actualPath[0])
+    console.log(item.path.split('/')[0], item.name)
     if (item.path.split('/')[0] === actualPath[0]) {
 
       let contentFile = document.createElement('div');

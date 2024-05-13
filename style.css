@@ -279,11 +279,7 @@ p {
     z-index: 10;
     display: none;
     margin: none;
-}
-
-.win {
-    position: absolute;
-}   
+} 
 
 #window {
     position: absolute; /* Changed from relative to absolute */ 
@@ -493,7 +489,6 @@ p {
 .contentFile p, .contentFolder p {
     text-overflow: ellipsis;
     overflow: hidden;
-    flex-wrap: wrap;
 }
 
 .contentFile:hover, .contentFolder:hover {
