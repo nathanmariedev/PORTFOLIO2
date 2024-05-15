@@ -13,11 +13,25 @@ button.addEventListener('click', () => {
   header.style.display = 'none';
   about.classList.remove('hidden');
   about.scrollIntoView({ behavior: 'smooth' })
+  // Define a function to handle the scroll event
+  const scrollHandler = () => {
+    // Remove the event listener to avoid multiple console logs
+    window.removeEventListener('scroll', scrollHandler);
+
+    // Print message after a short delay to ensure scrolling has finished
+    setTimeout(() => {
+      home.style.display = 'none';
+    }, 800); // Adjust the delay (in milliseconds) as needed
+  };
+
+  // Add scroll event listener to detect when scrolling has finished
+  window.addEventListener('scroll', scrollHandler, { once: true });
 });
 
 window.addEventListener('reload', () => {
   console.log('reload');
   about.classList.add('hidden');
+  home.style.display = 'flex';
 });
 
 console.log(header);
@@ -87,7 +101,7 @@ let windows = document.getElementById('window');
 let resizeSection = document.getElementById('resizeSection');
 let finder = document.getElementById('finder')
 
-const draggables = movables
+let draggables = movables
 const gridSize = 100; // Size of the grid
 let lastClickTimestamp = 0;
 let lastWindowPosition = {
@@ -111,16 +125,14 @@ const selectionRectangle = document.getElementById('selection-rectangle');
 screen.addEventListener('mousedown', (event) => {
   if (!canSelect) return;
   console.log("SELECTION mousedown")
-  draggables.forEach(draggable => {
-    draggable.classList.remove("selected")
-  }
-  );
+  
   startX = event.clientX - screen.getBoundingClientRect().left;
   startY = event.clientY - screen.getBoundingClientRect().top;
   isSelecting = true;
   selectionRectangle.style.display = 'block';
   selectionRectangle.style.left = `${startX}px`;
   selectionRectangle.style.top = `${startY}px`;
+
 });
 
 screen.addEventListener('mousemove', (event) => {
@@ -153,6 +165,10 @@ screen.addEventListener('mousemove', (event) => {
 });
 
 screen.addEventListener('mouseup', () => {
+  draggables.forEach(draggable => {
+    draggable.classList.remove("selected")
+  }
+  );
   if (!canSelect) return;
   console.log("SELECTION mouseup")
   if (!isSelecting) {
@@ -171,6 +187,7 @@ screen.addEventListener('mouseup', () => {
 // MOVING FILES AND FOLDERS
 
 function selectIcon(event) {
+  draggables = Array.from(folders).concat(Array.from(files));
   if (lastClickTimestamp + 200 > new Date().getTime()) {
     console.log("DOUBLE CLICK")
     const computerElement = document.getElementById('computer');
@@ -192,8 +209,8 @@ function selectIcon(event) {
           windows.style.display = 'none'; // Open folder
         } else {
           windows.style.display = 'block'; // Open text file
-          windows.style.left = `${computerLeft + event.clientX}px`;
-          windows.style.top = `${computerTop + event.clientY}px`;
+          windows.style.left = `${computerLeft + computerRect.width / 2 - windows.getBoundingClientRect().width / 2}px`;
+          windows.style.top = `${computerTop + computerRect.height / 2 - windows.getBoundingClientRect().height / 2}px`;
           let content = windows.children[1];
           content.innerHTML = item.content;
         }
@@ -207,7 +224,9 @@ function selectIcon(event) {
   }
   console.log("ICON selected")
   draggables.forEach(draggable => {
-    draggable.classList.remove("selected")
+    if (draggable !== event.target) {
+      draggable.classList.remove("selected")
+    }
   });
 
   selectedIcon = this;
@@ -243,9 +262,6 @@ function stopDrag() {
   canSelect = true;
   document.removeEventListener('mousemove', drag);
   document.removeEventListener('mouseup', stopDrag);
-  draggables.forEach(draggable => {
-    draggable.addEventListener('mousedown', selectIcon);
-  });
 }
 
 // MOVIDING WINDOWS
@@ -606,6 +622,19 @@ const data = [
     "type": "folder",
     "icon": "public/folder.png",
     "path": "Documents"
+  },
+  {
+    "name": "PROJECTS",
+    "type": "folder",
+    "icon": "public/folder.png",
+    "path": "Documents"
+  },
+  {
+    "name": "portfolio",
+    "type": "file",
+    "icon": "public/file.png",
+    "path": "Desktop",
+    "content": "This portfolio is a project I developed to showcase my skills and experience. It's a desktop environment that allows you to explore my work, learn more about me, and even interact with some of the elements. You can open files (only text, I didn't managed to recreate apps like VsCode 😅), resize windows, interact with the file/folder explorer. Feel free to have a look! <br><br> I built this portfolio using HTML, CSS, and JavaScript. This project is a static website, but I'm thinking of adding some dynamic features in the future. <br><br> I hope you enjoy exploring my portfolio! You can find the source code on my GitHub repository 'PORTFOLIOs'."
   }
 ]
 // Desktop
