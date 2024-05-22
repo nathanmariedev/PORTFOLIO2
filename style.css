@@ -298,7 +298,6 @@ p {
 }
 
 .windowContent {
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
     width: 50vw;
     height: 50vh;
     overflow: auto;

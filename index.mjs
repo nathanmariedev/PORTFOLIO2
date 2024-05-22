@@ -120,7 +120,7 @@ const selectionRectangle = document.getElementById('selection-rectangle');
 screen.addEventListener('mousedown', (event) => {
   if (!canSelect) return;
   console.log("SELECTION mousedown")
-  
+
   startX = event.clientX - screen.getBoundingClientRect().left;
   startY = event.clientY - screen.getBoundingClientRect().top;
   isSelecting = true;
@@ -480,12 +480,6 @@ let actualPath = ["Nathan"];
 
 const data = [
   {
-    "name": "Nathan",
-    "type": "primary",
-    "icon": "public/home.svg",
-    "path": null
-  },
-  {
     "name": "Applications",
     "type": "primary",
     "icon": "public/apps.svg",
@@ -519,7 +513,8 @@ const data = [
     "name": "Spotify",
     "type": "file",
     "icon": "public/spotify.png",
-    "path": "Applications"
+    "path": "Applications",
+    "content": "I use Spotify every days. I love music, especially rap, house and jazz music. Spotify allows me to discover new artists, create playlists, share my tastes with my friends..."
   },
   {
     "name": "hello.txt",
@@ -559,55 +554,64 @@ const data = [
     "name": "Ableton",
     "type": "file",
     "icon": "public/ableton.png",
-    "path": "Applications"
+    "path": "Applications",
+    "content": "I have been using Ableton Live for a few years now. It's a powerful digital audio workstation (DAW) that allows me to create music. I use it to produce music, mix tracks, and even to create sound effects for my projects. <br><br> Before using Ableton Live, I used other DAWs such as FL Studio and Logic Pro. However, I found Ableton Live to be the most intuitive and flexible DAW for my needs."
   },
   {
     "name": "Terminal",
     "type": "file",
     "icon": "public/terminal.png",
-    "path": "Applications"
+    "path": "Applications",
+    "content": "I use the terminal on a daily basis to interact with my computer. I used to learn bash during my studies. I use it to navigate through directories, run scripts, and even to manage my projects using Git. <br><br> During my third year's internship at Natixis, I had the opportunity to create scripts to automate repetitive tasks. I used bash and Python to create these scripts. " 
   },
   {
     "name": "Linkedin",
     "type": "file",
     "icon": "public/linkedin.png",
-    "path": "Applications"
+    "path": "Applications",
+    "content": "I'm quite active on LinkedIn, where I share some of my projects. I use LinkedIn to connect with other professionals, and stay in touch with my network. <br><br> Here is my LinkedIn profile: https://www.linkedin.com/in/nathan-marie/ <br><br> Feel free to connect with me!"
   },
   {
     "name": "CLion",
     "type": "file",
     "icon": "public/clion.png",
-    "path": "Applications"
+    "path": "Applications",
+    "content": "CLion is an IDE developed by JetBrains, which is specialized in C and C++ development. I choosed to learn C and C++ during my studies at the CNAM de Bretagne to get a valuable certification (you can find it in Documents/EDUCATION/cnam_diploma.pdf), and I used CLion to develop my projects. As all JetBrains IDEs, CLion is very powerful and provides a lot of features to improve the development process."
   },
   {
     "name": "IntelliJ",
     "type": "file",
     "icon": "public/intell.png",
-    "path": "Applications"
+    "path": "Applications",
+    "content": "IntelliJ IDEA is an IDE developed by JetBrains, which is specialized in Java/Kotlin development. I used IntelliJ IDEA to develop my Kotlin projects during my studies."
   },
   {
     "name": "SQLDeveloper",
     "type": "file",
     "icon": "public/sqldev.png",
-    "path": "Applications"
+    "path": "Applications",
+    "content": "SQL Developer is a free integrated development environment that simplifies the development and management of Oracle Database. During my studies, I had the opportunity to learn SQL, and I used SQL Developer to practice my skills."
   },
   {
     "name": "Notion",
     "type": "file",
     "icon": "public/notion.png",
-    "path": "Applications"
+    "path": "Applications",
+    "content": "Notion is an all-in-one workspace where you can write, plan, collaborate, and get organized. I use Notion to manage my projects, take notes for my professional and personal projects. <br><br> I think it's one of my most used applications when i'm working on a project. You can easily create pages, databases, and even embed content from other apps. I really like working with Notion, to improve my productivity"
   },
   {
     "name": "Android Studio",
     "type": "file",
     "icon": "public/androidstudio.png",
-    "path": "Applications"
+    "path": "Applications",
+    "content": "I learned Android Developpement with Android studio. <br><br> My first Android project was a simple application that allow you to consult the weather of a city. I developped this application for a school project, and I learned a lot about Android developpement. This application was linked to a website developped with React. I had to reproduce the same features on the website and on the Android application, including the design, the API calls, and the user interactions."
   },
   {
     "name": "Figma",
     "type": "file",
     "icon": "public/figma.png",
-    "path": "Applications"
+    "path": "Applications",
+    "content": "Honestly, I'm not a good designer, but I use Figma to create some icons and to design some interfaces. I am familiar with the basics of Figma, and i really like the tool when I have to create a simple design. <br><br> For all my group projects, we use Figma to create our interfaces. The developper tool provided by Figma is very useful to get the CSS properties of the elements, and to recreate the design in the code."
   },
   {
     "name": "Docker",
@@ -647,10 +651,16 @@ const data = [
     "path": "Documents/PROJECTS"
   },
   {
-    "name": "androidApp",
+    "name": "gaïaMedication",
     "type": "file",
     "icon": "public/file.png",
-    "path": "Documents/PROJECTS/DEV",
+    "path": "Documents/PROJECTS/GAÏA-MEDICATION"
+  },
+  {
+    "name": "GAÏA-MEDICATION",
+    "type": "folder",
+    "icon": "public/folder.png",
+    "path": "Documents/PROJECTS"
   }
 ]
 // Desktop
@@ -700,8 +710,16 @@ data.forEach((item) => {
     listElement.classList.add('selected');
   }
   listElement.addEventListener('click', () => {
-    console.log("HEHE")
-
+    // Supprimer colonnes en trop
+    let allExistingColumns = document.getElementsByClassName('contentColumn');
+    allExistingColumns = Array.from(allExistingColumns);
+    allExistingColumns.forEach((column) => {
+      if (parseInt(column.classList[1]) >= 2) {
+        console.log("AAA")
+        column.remove();
+      }
+    }
+    );
     Array.from(primaryFolders.children).forEach((element) => {
       element.classList.remove('selected');
     });
@@ -801,7 +819,7 @@ let initFirstColumn = () => {
 }
 
 let initNewColumn = (columnId, item) => {
-  actualPath = actualPath.slice(0, columnId-1);
+  actualPath = actualPath.slice(0, columnId - 1);
   actualPath.push(item.name);
 
   // Supprimer colonnes en trop
@@ -814,7 +832,7 @@ let initNewColumn = (columnId, item) => {
   }
   );
 
-  console.log("EXISTING COLUMNS", allExistingColumns) 
+  console.log("EXISTING COLUMNS", allExistingColumns)
   console.log("ACTUAL PATH", actualPath)
   console.log("ITEM", item)
 
