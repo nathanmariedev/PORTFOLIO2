@@ -1,16 +1,13 @@
 let about_me = "Au cours de mes trois années d’IUT, j'ai eu l’occasion de travailler sur de nombreux projets variés tels que des applications web, des logiciels (Java, Kotlin) ou bien encore la création et la maintenance de serveurs Apache. De plus, lors de mon stage de deuxième année chez WeCraftApps en tant que développeur web fullstack, j'ai pu approfondir mes compétences en développement web en réalisant des mises à jour et en implémentant de nouvelles fonctionnalités sur un site web d’agence immobilière."
 
-let header = document.getElementById('header');
 let menu = document.getElementsByClassName('menu')[0];
 let about = document.getElementById('about');
 let button = document.getElementById('scroll-btn');
 let conso = document.getElementsByClassName('console')[0];
 let home = document.getElementById('home');
-header.style.justifyContent = 'center';
 
 button.addEventListener('click', () => {
   console.log('click');
-  header.style.display = 'none';
   about.classList.remove('hidden');
   about.scrollIntoView({ behavior: 'smooth' })
   // Define a function to handle the scroll event
@@ -33,8 +30,6 @@ window.addEventListener('reload', () => {
   about.classList.add('hidden');
   home.style.display = 'flex';
 });
-
-console.log(header);
 
 // Array.from(conso.children).forEach((item) => {
 //     console.log(item.tagName); // Print the tag type
@@ -202,6 +197,7 @@ function selectIcon(event) {
       if (item.name === fileName) {
         if (item.type === "folder") {
           finder.style.display = "flex";
+          canSelect = false;
           windows.style.left = `${computerLeft + event.clientX}px`;
           windows.style.top = `${computerTop + event.clientY}px`;
           actualPath.push(item.name);
@@ -388,24 +384,25 @@ function resizeWindow(event) {
     // Calculate maximum allowed width and height
     const computerElement = document.getElementById('computer');
     const computerRect = computerElement.getBoundingClientRect();
-    const windowRect = windows.getBoundingClientRect();
-    const maxWidth = computerRect.right - windows.offsetLeft;
-    const maxHeight = computerRect.bottom - windowRect.top;
+    const windowContentRect = windows.children[1].getBoundingClientRect();
+    const windowContent = windows.children[1];
+    const maxWidth = computerRect.right - windowContent.offsetLeft;
+    const maxHeight = computerRect.bottom - windowContentRect.top;
 
     // Calculate new width and height
-    let newWidth = windows.offsetWidth + (event.clientX - startWindowsX);
-    let newHeight = windows.offsetHeight + (event.clientY - startWindowsY);
+    let newWidth = windowContent.offsetWidth + (event.clientX - startWindowsX);
+    let newHeight = windowContent.offsetHeight + (event.clientY - startWindowsY);
 
     // Ensure new width and height are within the maximum allowed
     newWidth = Math.min(Math.max(200, newWidth), maxWidth);
     newHeight = Math.min(newHeight, maxHeight);
 
     // Set new width and height
-    windows.style.width = `${newWidth}px`;
-    windows.style.height = `${newHeight}px`;
+    windowContent.style.width = `${newWidth}px`;
+    windowContent.style.height = `${newHeight}px`;
 
     startWindowsX = Math.min(event.clientX, computerRect.right);
-    startWindowsY = Math.min(Math.max(event.clientY, windowRect.bottom), computerRect.bottom);
+    startWindowsY = Math.min(Math.max(event.clientY, windowContentRect.bottom), computerRect.bottom);
     console.log(computerRect)
 
   }
@@ -430,40 +427,53 @@ let startColumnX = 0;
 let resizingElement = null; // Variable pour suivre l'élément actuellement redimensionné
 
 
-Array.from(allResizeColumn).forEach((cc) => {
-  cc.addEventListener('mousedown', startResizeColumn);
-});
+// Array.from(allResizeColumn).forEach((cc) => {
+//   cc.addEventListener('mousedown', startResizeColumn);
+// });
 
-function startResizeColumn(event) {
-  let columnId = parseInt(event.target.classList[1]); // Assurez-vous que columnId est un nombre entier
-  resizingElement = document.getElementsByClassName("allFilesFolders")[columnId - 1];
-  console.log(resizingElement);
-  console.log("start RESIZE COLUMN");
-  canSelect = false;
-  isResizingColumn = true;
-  startColumnX = event.clientX - resizingElement.getBoundingClientRect().right; // Utilisez clientX au lieu de mouseX
+// function startResizeColumn(event) {
+//   let columnId = parseInt(event.target.classList[1]); // Assurez-vous que columnId est un nombre entier
+//   resizingElement = document.getElementsByClassName("allFilesFolders")[columnId - 1];
+//   console.log(resizingElement);
+//   console.log("start RESIZE COLUMN");
+//   canSelect = false;
+//   isResizingColumn = true;
+//   startColumnX = event.clientX - resizingElement.getBoundingClientRect().right; // Utilisez clientX au lieu de mouseX
 
-  window.addEventListener('mousemove', resizeColumn);
-  window.addEventListener('mouseup', stopResizeColumn);
-}
+//   window.addEventListener('mousemove', resizeColumn);
+//   window.addEventListener('mouseup', stopResizeColumn);
+// }
 
+// let lastX = 0;
 
-function resizeColumn(event) {
-  if (isResizingColumn && resizingElement) {
-    // Calculate new width
-    let newWidth = resizingElement.offsetWidth + (event.clientX - resizingElement.getBoundingClientRect().right);
+// function resizeColumn(event) {
+//   if (isResizingColumn && resizingElement) {
+//     // Calculate new width
+//     if (finder.getBoundingClientRect().left >= computer.getBoundingClientRect().left && finder.getBoundingClientRect().right <= computer.getBoundingClientRect().right){
+//       let newWidth = resizingElement.offsetWidth + (event.clientX - resizingElement.getBoundingClientRect().right);
+//       if (finder.getBoundingClientRect().right + (finder.getBoundingClientRect().width + newWidth) >= computer.getBoundingClientRect().right) {
+//         newWidth = computer.getBoundingClientRect().right - finder.getBoundingClientRect().right - finder.getBoundingClientRect().width;
+//       }
 
-    // Set new width
-    resizingElement.style.width = `${newWidth - 35}px`;
-  }
-}
+//       // Set new width
+//       resizingElement.style.width = `${newWidth - 35}px`;
+//       lastX = event.clientX;
+//     } else if (event.clientX < lastX) {
+//       let newWidth = resizingElement.offsetWidth + (event.clientX - resizingElement.getBoundingClientRect().right);
 
-function stopResizeColumn() {
-  isResizingColumn = false;
-  resizingElement = null; // Réinitialiser l'élément actuellement redimensionné
-  window.removeEventListener('mousemove', resizeColumn);
-  window.removeEventListener('mouseup', stopResizeColumn);
-}
+//       // Set new width
+//       resizingElement.style.width = `${newWidth - 35}px`;
+//       lastX = event.clientX;
+//     }
+//   }
+// }
+
+// function stopResizeColumn() {
+//   isResizingColumn = false;
+//   resizingElement = null; // Réinitialiser l'élément actuellement redimensionné
+//   window.removeEventListener('mousemove', resizeColumn);
+//   window.removeEventListener('mouseup', stopResizeColumn);
+// }
 
 // FOLDERS AND FILES
 let actualPath = ["Nathan"];
@@ -500,7 +510,7 @@ const data = [
     "path": null
   },
   {
-    "name": "Music",
+    "name": "Musique",
     "type": "primary",
     "icon": "public/music.svg",
     "path": null
@@ -512,7 +522,7 @@ const data = [
     "path": "Applications"
   },
   {
-    "name": "hello👋.txt",
+    "name": "hello.txt",
     "type": "file",
     "icon": "public/file.png",
     "path": "Desktop",
@@ -525,23 +535,17 @@ const data = [
     "path": "Desktop"
   },
   {
-    "name": "VsCode",
-    "type": "file",
-    "icon": "public/vscode.png",
-    "path": "Desktop",
-    "content": "As a software developer, I use Visual Studio Code on a daily basis. It's a powerful and lightweight code editor that allows me to work on a wide range of projects. I use it for web development, mobile development, and even for writing scripts."
-  },
-  {
     "name": "about_me.txt",
     "type": "file",
     "icon": "public/file.png",
-    "path": "Desktop"
+    "path": "Documents/ME",
+    "content": about_me
   },
   {
     "name": "musicProduction.als",
     "type": "file",
     "icon": "public/abl.png",
-    "path": "Desktop",
+    "path": "Musique",
     "content": "I have been using Ableton Live for a few years now. It's a powerful digital audio workstation (DAW) that allows me to create music. I use it to produce music, mix tracks, and even to create sound effects for my projects. <br><br> Before using Ableton Live, I used other DAWs such as FL Studio and Logic Pro. However, I found Ableton Live to be the most intuitive and flexible DAW for my needs."
   },
   {
@@ -633,8 +637,20 @@ const data = [
     "name": "portfolio",
     "type": "file",
     "icon": "public/file.png",
-    "path": "Desktop",
+    "path": "Documents/PROJECTS",
     "content": "This portfolio is a project I developed to showcase my skills and experience. It's a desktop environment that allows you to explore my work, learn more about me, and even interact with some of the elements. You can open files (only text, I didn't managed to recreate apps like VsCode 😅), resize windows, interact with the file/folder explorer. Feel free to have a look! <br><br> I built this portfolio using HTML, CSS, and JavaScript. This project is a static website, but I'm thinking of adding some dynamic features in the future. <br><br> I hope you enjoy exploring my portfolio! You can find the source code on my GitHub repository 'PORTFOLIOs'."
+  },
+  {
+    "name": "DEV",
+    "type": "folder",
+    "icon": "public/folder.png",
+    "path": "Documents/PROJECTS"
+  },
+  {
+    "name": "androidApp",
+    "type": "file",
+    "icon": "public/file.png",
+    "path": "Documents/PROJECTS/DEV",
   }
 ]
 // Desktop
@@ -732,6 +748,7 @@ data.forEach((item) => {
 <div class="resizeColumn 1"></div>
 */
 let allFilesFoldersPrimary = document.getElementsByClassName('contentColumn')[0];
+let content = document.getElementById('content');
 
 let initFirstColumn = () => {
   allFilesFoldersPrimary.innerHTML = "";
@@ -744,11 +761,10 @@ let initFirstColumn = () => {
     if (item.type === "primary") {
       return;
     }
-    console.log(item.path.split('/')[0], item.name)
     if (item.path.split('/')[0] === actualPath[0]) {
 
       let contentFile = document.createElement('div');
-      contentFile.classList.add('contentFile');
+      item.type === "folder" ? contentFile.classList.add('contentFolder') : contentFile.classList.add('contentFile');
       let label = document.createElement('div');
       label.classList.add('label');
       let img = document.createElement('img');
@@ -758,6 +774,19 @@ let initFirstColumn = () => {
       label.appendChild(img);
       label.appendChild(p);
       contentFile.appendChild(label);
+      if (item.type === "folder") {
+        let chevron = document.createElement('img');
+        chevron.src = "public/chevron-right.svg";
+        contentFile.appendChild(chevron);
+        contentFile.addEventListener('click', () => {
+          console.log(item)
+          initNewColumn(2, item);
+        });
+      } else {
+        contentFile.addEventListener('click', () => {
+          openFile(item);
+        });
+      }
       allFilesFolders.appendChild(contentFile);
 
 
@@ -767,6 +796,93 @@ let initFirstColumn = () => {
   let resizeColumn = document.createElement('div');
   resizeColumn.classList.add('resizeColumn');
   resizeColumn.classList.add('1');
-  resizeColumn.addEventListener('mousedown', startResizeColumn);
+  //resizeColumn.addEventListener('mousedown', startResizeColumn);
   allFilesFoldersPrimary.appendChild(resizeColumn);
+}
+
+let initNewColumn = (columnId, item) => {
+  actualPath = actualPath.slice(0, columnId-1);
+  actualPath.push(item.name);
+
+  // Supprimer colonnes en trop
+  let allExistingColumns = document.getElementsByClassName('contentColumn');
+  allExistingColumns = Array.from(allExistingColumns);
+  allExistingColumns.forEach((column) => {
+    if (parseInt(column.classList[1]) >= columnId) {
+      column.remove();
+    }
+  }
+  );
+
+  console.log("EXISTING COLUMNS", allExistingColumns) 
+  console.log("ACTUAL PATH", actualPath)
+  console.log("ITEM", item)
+
+  let contentColumn = document.createElement('div');
+  contentColumn.classList.add('contentColumn');
+  contentColumn.classList.add(columnId);
+
+  let allFilesFolders = document.createElement('div');
+  allFilesFolders.classList.add('allFilesFolders');
+  allFilesFolders.classList.add(columnId);
+
+  let resizeColumn = document.createElement('div');
+  resizeColumn.classList.add('resizeColumn');
+  resizeColumn.classList.add(columnId);
+  //resizeColumn.addEventListener('mousedown', startResizeColumn);
+
+  contentColumn.appendChild(allFilesFolders);
+  contentColumn.appendChild(resizeColumn);
+
+  data.forEach((item) => {
+    if (item.type === "primary") {
+      return;
+    }
+    if (item.path === actualPath.join('/')) {
+      let contentFile = document.createElement('div');
+      item.type === "folder" ? contentFile.classList.add('contentFolder') : contentFile.classList.add('contentFile');
+      let label = document.createElement('div');
+      label.classList.add('label');
+      let img = document.createElement('img');
+      img.src = item.icon;
+      let p = document.createElement('p');
+      p.innerText = item.name;
+      label.appendChild(img);
+      label.appendChild(p);
+      contentFile.appendChild(label);
+      if (item.type === "folder") {
+        let chevron = document.createElement('img');
+        chevron.src = "public/chevron-right.svg";
+        contentFile.appendChild(chevron);
+        contentFile.addEventListener('click', () => {
+
+          initNewColumn(columnId + 1, item);
+        });
+      } else {
+        contentFile.addEventListener('click', () => {
+          openFile(item);
+        });
+      }
+      allFilesFolders.appendChild(contentFile);
+    }
+  });
+
+  content.appendChild(contentColumn);
+}
+
+// open file on finder
+let lastClickOpenFile = 0;
+
+let openFile = (file) => {
+  if (lastClickOpenFile + 200 > new Date().getTime()) {
+    finder.style.display = "none";
+    console.log("DOUBLE CLICK")
+    windows.style.display = 'block'; // Open text file
+    windows.style.left = `${computer.getBoundingClientRect().left + computer.getBoundingClientRect().width / 2 - windows.getBoundingClientRect().width / 2}px`;
+    windows.style.top = `${computer.getBoundingClientRect().top + computer.getBoundingClientRect().height / 2 - windows.getBoundingClientRect().height / 2}px`;
+    let content = windows.children[1];
+    content.innerHTML = file.content;
+  } else {
+    lastClickOpenFile = new Date().getTime();
+  }
 }

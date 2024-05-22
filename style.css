@@ -1,5 +1,5 @@
 /* Rest of your CSS code */
-
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap');
 body {
     margin: 0px;
 }
@@ -87,11 +87,14 @@ p {
 }
 
 #home h1 {
-    font-size: 5em;
+    font-size: 8em;
     font-weight: 700;
     color: #fff;
     line-height: 1;
     margin: 0;
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    line-height: 0.8em;
 }
 
 #home h2 {
@@ -279,7 +282,7 @@ p {
     z-index: 10;
     display: none;
     margin: none;
-} 
+}  
 
 #window {
     position: absolute; /* Changed from relative to absolute */ 
@@ -291,17 +294,27 @@ p {
     border-top-right-radius: 15px;
     z-index: 500;
     cursor: pointer;
-    overflow: auto; /* Ensure content overflows properly when resizing */
+    
+}
+
+.windowContent {
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    width: 50vw;
+    height: 50vh;
+    overflow: auto;
     min-width: 200px; /* Set minimum width */
     min-height: 150px; /* Set minimum height */
-    width: 50vw; /* Set initial width */
-    height: 50vh; /* Set initial height */
+
+    color: white;
+    font-size: 1em;
+    margin: 10px;
+    margin-right: 5px;
+    margin-bottom: 2px;
 }
 
 
 .windowHeader {
-    position: relative;
-    width: 100%;
+    width:inherit;
     height: 20px;
     background-color: #232323;
     border-top-left-radius: 15px;
@@ -315,11 +328,6 @@ p {
     z-index: 1000;
 }
 
-#window p {
-    color: white;
-    font-size: 1em;
-    margin-left: 10px;
-}
 
 .close {
     width: 13px;
@@ -383,9 +391,8 @@ p {
     overflow: auto;
     min-width: 200px;
     min-height: 150px;
-    width: 50vw;
     height: 50vh;
-    overflow:hidden;
+    overflow-x: hidden;
 }
 
 #finder .windowHeader {
@@ -398,6 +405,8 @@ p {
     backdrop-filter: blur(25px); /* Apply blur effect */
     background-color: rgba(39, 39, 39, 0.612); /* Adjust the transparency */
     padding: 10px;
+    padding-bottom: 0px;
+    padding-top: 0px;
     height: 100%;
     position: relative;
     top: 0px;
@@ -451,9 +460,8 @@ p {
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-
     user-select: none;
-    overflow: scroll;
+    overflow-x:scroll;
 }
 
 .allFilesFolders{
@@ -489,6 +497,7 @@ p {
 .contentFile p, .contentFolder p {
     text-overflow: ellipsis;
     overflow: hidden;
+    line-break: none;
 }
 
 .contentFile:hover, .contentFolder:hover {
@@ -505,7 +514,6 @@ p {
     justify-content: flex-start;
     align-items: center;
     gap: 5px;
-    overflow: scroll;
 }
 
 .contentColumn {
@@ -513,7 +521,6 @@ p {
     border-right: solid 1px #1b1b1b;
     border-top: solid 1px #1b1b1b;
     border-bottom: solid 1px #1b1b1b;
-    overflow-x: scroll;
     display: flex;
     flex-direction: row;
 }
@@ -525,4 +532,28 @@ p {
     top: 0px;
     right: 0px;
     cursor:ew-resize;
+}
+
+/* SCROLLBAR */
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+    position: absolute;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }
