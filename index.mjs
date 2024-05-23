@@ -260,21 +260,43 @@ function stopDrag() {
   document.removeEventListener('mouseup', stopDrag);
 }
 
+
+
 // MOVIDING WINDOWS
 document.getElementsByClassName('windowHeader')[0].addEventListener('mousedown', selectWindow);
 Array.from(document.getElementsByClassName('close')).forEach((close) => {
   close.addEventListener('click', (e) => {
     close.classList[1] === "win" ? windows.style.display = 'none' : finder.style.display = 'none';
   });
-})
 
+  close.addEventListener("mouseover", function(e) {
+    console.log(close.children[0].style.display = "block");
+    close.addEventListener("mouseleave", function(e) {
+        e.target.children[0].style.display = "none";
+    });
+  });
+})
 Array.from(document.getElementsByClassName('minimize')).forEach((minimize) => {
   minimize.addEventListener('click', () => {
     minimize.classList[1] === "win" ? windows.style.display = 'none' : finder.style.display = 'none';
   });
+
+  minimize.addEventListener("mouseover", function(e) {
+    console.log(minimize.children[0].style.display = "block");
+    minimize.addEventListener("mouseleave", function(e) {
+        e.target.children[0].style.display = "none";
+    });
+  });
 });
 
 Array.from(document.getElementsByClassName('maximize')).forEach((maximize) => {
+  maximize.addEventListener("mouseover", function(e) {
+    console.log(maximize.children[0].style.display = "block");
+    maximize.addEventListener("mouseleave", function(e) {
+        e.target.children[0].style.display = "none";
+    });
+  });
+
   maximize.addEventListener('click', () => {
     canSelect = false;
     const computerElement = document.getElementById('computer');
