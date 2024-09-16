@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Maxime Lemeunier</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
+</head>
+
+<body>
+    <div id="pdfViewer" class="pdf-container" style="width:100%; height:100vh;"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.7.570/pdf.min.js"></script>
+    <script>
+        var url = 'https://nathanmarie.fr/rapport_natixis_nathan_marie.pdf';
+
+
+        var pdfViewer = document.getElementById('pdfViewer');
+        var devicePixelRatio = window.devicePixelRatio || 1;
+
+        function renderPage(page, scale) {
+            var viewport = page.getViewport({ scale: scale });
+
+            var canvas = document.createElement('canvas');
+            var context = canvas.getContext('2d');
+            pdfViewer.appendChild(canvas);
+
+            var outputScale = devicePixelRatio;
+            canvas.width = Math.floor(viewport.width * outputScale);
+            canvas.height = Math.floor(viewport.height * outputScale);
+            canvas.style.width = Math.floor(viewport.width) + "px";
+            canvas.style.height = Math.floor(viewport.height) + "px";
+
+            context.scale(outputScale, outputScale);
+
+            var renderContext = {
+                canvasContext: context,
+                viewport: viewport
+            };
+            page.render(renderContext).promise.then(function () {
+                console.log('Page rendue');
+            });
+        }
+
+        function loadPDF(pdf) {
+            var scale = 1.5;
+
+            for (let i = 1; i <= pdf.numPages; i++) {
+                pdf.getPage(i).then(function (page) {
+                    renderPage(page, scale);
+                });
+            }
+        }
+
+        pdfjsLib.getDocument(url).promise.then(function (pdf) {
+            loadPDF(pdf);
+        });
+    </script>
+
+
+</body>
+
+</html>
+<style>
+    body {
+        margin: 0px;
+        height: 100vh;
+        background-color: black;
+        margin: 0px;
+        display: flex;
+        flex-direction: column;
+        justify-content: column;
+        align-items: center;
+    }
+
+    .pdf-container {
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+        margin-bottom: 40px;
+    }
+
+    #pdfViewer {
+        padding: 0px;
+        margin: 0px;
+    }
+
+    canvas {
+        margin: 0 auto;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        max-width: 100%;
+        height: auto;
+    }
+
+    @media (max-width: 1200px) {
+        canvas {
+            width: 90%;
+        }
+    }
+
+    @media (max-width: 768px) {
+        canvas {
+            width: 95%;
+        }
+    }
+
+    @media (max-width: 480px) {
+        canvas {
+            width: 100%;
+        }
+    }
+
+
+    p {
+        color: rgb(255, 255, 255);
+        margin: 0px;
+    }
+
+    .roboto-thin {
+        font-family: "Roboto", sans-serif;
+        font-weight: 100;
+        font-style: normal;
+    }
+
+    .roboto-light {
+        font-family: "Roboto", sans-serif;
+        font-weight: 300;
+        font-style: normal;
+    }
+</style>
