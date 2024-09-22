@@ -24,17 +24,29 @@
         var pdfViewer = document.getElementById('pdfViewer');
         var devicePixelRatio = window.devicePixelRatio || 1;
 
-        function renderPage(page, scale) {
-            var viewport = page.getViewport({ scale: scale });
+        function getOptimalScale(viewportWidth, viewportHeight) {
+            var maxCanvasPixels = 16777216;
+            var scaleFactor = Math.min(Math.sqrt(maxCanvasPixels / (viewportWidth * viewportHeight)), 1);
+
+            return scaleFactor;
+        }
+
+        console.log("AAA")
+
+        function renderPage(page) {
+            var viewport = page.getViewport({ scale: 1.5 });
+            
+            var optimalScale = getOptimalScale(viewport.width, viewport.height);
+            viewport = page.getViewport({ scale: optimalScale });
 
             var canvas = document.createElement('canvas');
             var context = canvas.getContext('2d');
             pdfViewer.appendChild(canvas);
 
-            var outputScale = devicePixelRatio;
+            var outputScale = devicePixelRatio || 1;
             canvas.width = Math.floor(viewport.width * outputScale);
             canvas.height = Math.floor(viewport.height * outputScale);
-            canvas.style.width = Math.floor(viewport.width) - 100 + "px";
+            canvas.style.width = Math.floor(viewport.width) + "px";
             canvas.style.height = Math.floor(viewport.height) + "px";
 
             context.scale(outputScale, outputScale);
@@ -43,10 +55,12 @@
                 canvasContext: context,
                 viewport: viewport
             };
+            
             page.render(renderContext).promise.then(function () {
-                console.log('Page rendue');
+                console.log('Page rendered with optimal scale');
             });
         }
+
 
         function loadPDF(pdf) {
             var scale = 1.5;
