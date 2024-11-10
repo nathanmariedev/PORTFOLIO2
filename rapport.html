@@ -28,6 +28,8 @@
         var pdfViewer = document.getElementById('pdfViewer');
         var devicePixelRatio = window.devicePixelRatio || 1;
 
+        const renderedPages = new Set();
+
         function getOptimalScale(viewportWidth, viewportHeight) {
             var maxCanvasPixels = 16777216;
             var scaleFactor = Math.min(Math.sqrt(maxCanvasPixels / (viewportWidth * viewportHeight)), 1);
@@ -35,55 +37,58 @@
             return scaleFactor;
         }
 
-        console.log("AAA")
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    const pageNumber = parseInt(entry.target.getAttribute('data-page-number'));
 
-        function renderPage(page, scale) {
-            var viewport = page.getViewport({ scale: scale });
-            var canvas = document.createElement('canvas');
-            var context = canvas.getContext('2d');
-            pdfViewer.appendChild(canvas);
+                    // Vérifier si la page a déjà été rendue
+                    if (!renderedPages.has(pageNumber)) {
+                        pdf.getPage(pageNumber).then((page) => {
+                            renderPage(page, entry.target);
+                            renderedPages.add(pageNumber);  // Marquer cette page comme rendue
+                        });
+                    }
+                }
+            });
+        }, { rootMargin: '50px', threshold: 0.1 });
 
-            var outputScale = devicePixelRatio || 1;
-            canvas.width = Math.floor(viewport.width * outputScale);
-            canvas.height = Math.floor(viewport.height * outputScale);
-            canvas.style.width = Math.floor(viewport.width) + "px";
-            canvas.style.height = Math.floor(viewport.height) + "px";
+        function renderPage(page, container) {
+            const viewport = page.getViewport({ scale: 1 });  // Ajuste le scale si nécessaire
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
 
-            context.scale(outputScale, outputScale);
+            // Définir les dimensions du canvas
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            container.appendChild(canvas);
 
-            var renderContext = {
+            const renderContext = {
                 canvasContext: context,
                 viewport: viewport
             };
 
-            page.render(renderContext).promise.then(function () {
-                if (pagesRendered === 1) {
-                    // Activer le scroll après la première page rendue
-                    document.body.style.overflow = 'auto';
-                }
-                pagesRendered++;
-            });
+            page.render(renderContext);
         }
 
-
         function loadPDF(pdf) {
-            var scale = 1.5;
-            pdfViewer.innerHTML = ''; // Effacer le contenu du pdfViewer avant de charger le PDF
+            pdfViewer.innerHTML = ''; // Nettoyer le contenu précédent du pdfViewer
 
+            // Pour chaque page, créer un conteneur div
             for (let i = 1; i <= pdf.numPages; i++) {
-                pdf.getPage(i).then(function (page) {
-                    renderPage(page, scale);
-                });
+                const pageContainer = document.createElement('div');
+                pageContainer.setAttribute('data-page-number', i);
+                pageContainer.classList.add('pdf-page-container');
+                pdfViewer.appendChild(pageContainer);
+
+                // Observer la page pour la rendre seulement quand elle est visible
+                observer.observe(pageContainer);
             }
         }
 
-
-        // Recharger le PDF à chaque rechargement de la page
-        window.onload = function () {
-            reloadPDF();
-        };
-
-        pdfjsLib.getDocument(url).promise.then(function (pdf) {
+        let pdf;
+        pdfjsLib.getDocument(url).promise.then((loadedPdf) => {
+            pdf = loadedPdf;
             loadPDF(pdf);
         });
     </script>
